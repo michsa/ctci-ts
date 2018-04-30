@@ -1,0 +1,19 @@
+{
+    "extends": "./tsconfig-base",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "types": [
+            "node"
+        ],
+        "declaration": true,
+        "declarationDir": "./tsdecl"
+    },
+    "include": [
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "*.spec.ts",
+        "*.test.ts",
+        "./node_modules/**/*"
+    ]
+}
