@@ -2,6 +2,7 @@ import { isNumber } from "util"
 
 export default class Chapter1 {
 
+  // 1.1
   public isUnique(str: string): boolean {
     let checker: number = 0
     for (let i: number = 0; i < str.length; i++) {
@@ -12,6 +13,7 @@ export default class Chapter1 {
     return true
   }
 
+  // 1.2
   public checkPermutation(a: string, b: string): boolean {
     const counts: number[] = new Array<number>(
       'z'.charCodeAt(0) - 'a'.charCodeAt(0)
@@ -29,7 +31,6 @@ export default class Chapter1 {
   }
 
   private charToIndex(char: string): number {
-    console.log(char)
     return (char.charCodeAt(0) - 'a'.charCodeAt(0))
   }
 
