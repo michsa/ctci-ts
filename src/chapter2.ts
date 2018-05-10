@@ -45,6 +45,12 @@ export class LinkedList {
     }
   }
 
+  prepend(value: any) {
+    const n: ListNode = new ListNode(value)
+    n.next = this.head
+    this.head = n
+  }
+
   toArray() {
     let n: ListNode = this.head
     const a: any[] = []
@@ -98,7 +104,7 @@ export class Chapter2 {
       // moving to it now would make us skip it in the next loop.
       else pLook = pLook.next
     }
-    console.log(list.toArray())
+    // console.log(list.toArray())
   }
 
   /* 2.5 Sum Lists: you have two numbers represented by a linked list, where
@@ -111,7 +117,7 @@ export class Chapter2 {
     let pb = b.head
     let carry: boolean = false
     let sum: number = 0
-    while (pa !== null || pb !== null || !carry) {
+    while (pa !== null || pb !== null || carry) {
       // do some sums
       if (pa !== null) {
         sum += pa.value
@@ -132,9 +138,48 @@ export class Chapter2 {
         sum -= base
       }
 
+      // DEBUG: console.log("sum:", sum, " pa:", pa, " pb:", pb, " carry:", carry)
       output.append(sum)
+      sum = 0
     }
-
     return output
   }
+
+  /* 2.6 Palindrome: manages two pointers simultaneously to check if a linked
+  list is a palindrome in O(n) time. each recursion takes the next pLast as an
+  argument, and returns the next pFirst for its caller to use. 
+  
+  the result is that we progress through the list before doing any checking; 
+  once we hit the base case, pFirst is still at the head node, and we begin 
+  comparing first and last as we unspool the stack, incrementing pFirst and
+  returning to the previous pLast each time. 
+  
+  es6 destructuring makes it really easy to return both pFirst and the status
+  of our palindrome check. if we get a false, it will propagate back through
+  the stack. (if we want, we can check isValid to skip the comparison if we
+  already have a false, for a tiny extra bit of optimization at the cost of 
+  like 10 characters.)
+
+  note: for a valid palindrome, this will compare most nodes twice, on the way
+  down and on the way back. as long as comparison is constant time (like for
+  numbers) this is still optimal, but if we want to compare something else, it
+  must be further optimized to quit after it gets back to the middle. a counter
+  added to the return array would probably do the trick, though it'd be fun to 
+  see if the recursion could be modified to work with slow/fast pointers. */
+  public isPalindrome(l: LinkedList): boolean {
+    return l.head !== null && this.checkPalindrome(l.head, l.head)[1]
+  }
+
+  private checkPalindrome(pLast: ListNode, pFirst: ListNode): [ListNode, boolean] {
+    let isValid = true
+    if (pLast.next !== null) {
+      [pFirst, isValid] = this.checkPalindrome(pLast.next, pFirst) 
+    }
+    if (isValid && pLast.value !== pFirst.value) isValid = false 
+    // DEBUG: console.log("last:", pLast.value, " | first:", pFirst.value)
+    return [pFirst.next, isValid]
+  }
+
+  /* 2.7 Intersection: given two singly-linked lists, determine if the lists 
+  intersect (by reference), and return the intersecting node. */
 }

@@ -58,19 +58,61 @@ describe("Chapter 2: Linked Lists", () => {
       expect(checkIfPartitioned(nullList, 0)).to.equal(true)
     })
 
-    it("Should partition correctly when the first value is above the threshold", () => {
+    it("Should work with a first value above the threshold", () => {
       const list = new LinkedList(8, 1, 4, 6, 9, 10, 11, 4, 2)
       chap2.partition(list, 7)
       expect(checkIfPartitioned(list, 7)).to.equal(true)
     })
 
-    it("Should partition correctly when the first value is below the threshold", () => {
+    it("Should work with a first value below the threshold", () => {
       const list = new LinkedList(1, 5, 4, 7, 3, 2, 8, 0, 1, 10, 1)
       chap2.partition(list, 7)
       expect(checkIfPartitioned(list, 7)).to.equal(true)
     })
   })
 
+  describe("2.5: Sum Lists", () => {
+    
+    it("Should obtain 456 from 321 + 135", () => {
+      const a = new LinkedList(1, 2, 3)
+      const b = new LinkedList(5, 3, 1)
+      const expected = [6, 5, 4]
+      expect(chap2.sumLists(a, b).toArray()).to.deep.equal(expected)
+    })
 
+    it("Should obtain 1001 from 989 + 12 (carry, different lengths)", () => {
+      const a = new LinkedList(9, 8, 9)
+      const b = new LinkedList(2, 1)
+      const expected = [1, 0, 0, 1]
+      expect(chap2.sumLists(a, b).toArray()).to.deep.equal(expected)
+    })
+  })
 
+  describe("2.6: Check Palindrome", () => {
+
+    it("Should accept a valid odd palindrome", () => {
+      const input = new LinkedList(1, 2, 3, 4, 5, 4, 3, 2, 1)
+      expect(chap2.isPalindrome(input)).to.equal(true)
+    })
+
+    it("Should accept a valid even palindrome", () => {
+      const input = new LinkedList(70, 3, 3, 70)
+      expect(chap2.isPalindrome(input)).to.equal(true)
+    })
+
+    it("Should reject an invalid palindrome", () => {
+      const input = new LinkedList(1, 2, 3, 4, 5, 6, 7, 2, 1)
+      expect(chap2.isPalindrome(input)).to.equal(false)
+    })
+
+    it("Should return true for a one-node list", () => {
+      const input = new LinkedList(8)
+      expect(chap2.isPalindrome(input)).to.equal(true)
+    })
+
+    it("Should return false for an empty list", () => {
+      const input = new LinkedList()
+      expect(chap2.isPalindrome(input)).to.equal(false)
+    })
+  })
 })
