@@ -1,5 +1,3 @@
-import { isNumber } from "util"
-
 class ListNode {
   value: any
   next: ListNode = null
@@ -104,7 +102,7 @@ export class Chapter2 {
       // moving to it now would make us skip it in the next loop.
       else pLook = pLook.next
     }
-    // console.log(list.toArray())
+    // DEBUG: console.log(list.toArray())
   }
 
   /* 2.5 Sum Lists: you have two numbers represented by a linked list, where
@@ -182,4 +180,8 @@ export class Chapter2 {
 
   /* 2.7 Intersection: given two singly-linked lists, determine if the lists 
   intersect (by reference), and return the intersecting node. */
+  public isIntersecting(a: LinkedList, b: LinkedList): ListNode {
+    // meh
+    return null
+  }
 }
