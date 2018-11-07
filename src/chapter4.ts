@@ -23,25 +23,33 @@ export class TreeNode<T> {
     return a
   }
 
-  inOrder = (): T[] => [
-    ...this.doIfExists(this.left, 'inOrder'),
-    this.value,
-    ...this.doIfExists(this.right, 'inOrder')
-  ]
+  inOrder(): T[] {
+    return [
+      ...this.doIfExists(this.left, 'inOrder'),
+      this.value,
+      ...this.doIfExists(this.right, 'inOrder')
+    ]
+  }
 
-  preOrder = (): T[] => [
-    this.value, 
-    ...this.doIfExists(this.left, 'preOrder'), 
-    ...this.doIfExists(this.right, 'preOrder')
-  ]
+  preOrder(): T[] {
+    return [
+      this.value, 
+      ...this.doIfExists(this.left, 'preOrder'), 
+      ...this.doIfExists(this.right, 'preOrder')
+    ]
+  }
   
-  postOrder = (): T[] => [
-    ...this.doIfExists(this.left, 'postOrder'),
-    ...this.doIfExists(this.right, 'postOrder'),
-    this.value
-  ]
+  postOrder(): T[] {
+    return [
+      ...this.doIfExists(this.left, 'postOrder'),
+      ...this.doIfExists(this.right, 'postOrder'),
+      this.value
+    ]
+  }
 
-  doIfExists = (n: TreeNode<T>, f: string): T[] => n ? n[f]() : []
+  doIfExists(n: TreeNode<T>, f: string): T[] {
+    return n ? n[f]() : []
+  }
 }
 
 type TreeArrayNode<T> = T | TreeArray<T>
@@ -58,12 +66,19 @@ export class Tree<T> {
     return this.root === undefined
   }
 
-  inOrder = (): T[] => this.root.inOrder()
+  inOrder(): T[] {
+    return this.root.inOrder()
+  }
 
-  preOrder = (): T[] => this.root.preOrder()
+  preOrder(): T[] {
+    return this.root.preOrder()
+  }
 
-  postOrder = (): T[] => this.root.postOrder()
+  postOrder(): T[] {
+    return this.root.postOrder()
+  }
 
+  // for posterity
   print(): string {
     function doPrint(n: TreeNode<T>): string {
       if (!n) return ''

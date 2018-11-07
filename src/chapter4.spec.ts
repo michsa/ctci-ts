@@ -18,25 +18,13 @@ describe("Chapter 4: Lists & Graphs", () => {
     t1.root.right.left = new TreeNode(9)
     t1.root.right.right = new TreeNode(11)
 
-    const arr = [ 8, [ 5, [ 3, 2, 4 ], [ 7, 6 ] ], [ 10, 9, 11 ] ]
+    const arr = [8, [5, [3, 2, 4], [7, 6]], [10, 9, 11]]
     const t2 = new Tree<number>(arr)
-
-    console.log(t2.preOrder())
-    console.log(new Tree<number>(
-      [8, 
-        [5, 
-          [3, 2, 7], 
-          [6, 6]
-        ], 
-        [10, 11, 11]
-      ]
-    ).inOrder())
 
     it("can be constructed from nested arrays", () => {
       expect(t2.root.value).to.eql(8)
       expect(t2.root.left.left.right.value).to.eql(4)
-      expect(t1.root.right.left).to.eq(new TreeNode(9))
-      
+      expect(t1.root.right.left).to.eql(new TreeNode(9))
     })
 
     it("can serialize to nested arrays", () => {
