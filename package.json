@@ -4,11 +4,11 @@
   "description": "Solutions from _Cracking the Coding Interview_ implemented in Typescript, for testing with Mocha/Chai",
   "main": "index.js",
   "scripts": {
-    "test": "npm run build-test && mocha test",
+    "test": "npm run build-test && mocha --require source-map-support/register test",
     "lint": "tslint -c tslint.json -p tsconfig-base.json",
     "lint-fix": "tslint -c tslint.json -p tsconfig-base.json --fix",
-    "build-dist": "tsc -p tsconfig-src.json",
-    "build-test": "tsc -p tsconfig-test.json"
+    "build-dist": "tsc --sourcemap -p tsconfig-src.json",
+    "build-test": "tsc --sourcemap -p tsconfig-test.json"
   },
   "author": "Michelle Saad",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "chai": "^4.1.2",
     "mocha": "^5.1.1",
     "npm": "^6.0.1",
+    "source-map-support": "^0.5.9",
     "tslint": "^5.9.1",
     "typescript": "^2.8.3"
   }
