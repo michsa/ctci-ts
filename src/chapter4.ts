@@ -1,50 +1,84 @@
+import { isUndefined } from "util"
+
 export class TreeNode<T> {
   value: T
-  left: TreeNode<T> = null
-  right: TreeNode<T> = null
+  left: TreeNode<T>
+  right: TreeNode<T>
 
-  constructor(val: T) {
-    this.value = val
+  constructor(t: TreeArrayNode<T>) {
+    if (t instanceof Array) {
+      this.value = t[0] as T
+      if (t[1]) this.left = new TreeNode(t[1])
+      if (t[2]) this.right = new TreeNode(t[2])
+    }
+    else this.value = t as T
   }
+
+  toArray(): TreeArrayNode<T> {
+    if (!this.left && !this.right) return this.value
+    
+    const a: TreeArrayNode<T> = [this.value]
+    if (this.left) a.push(this.left.toArray())
+    if (this.right) a.push(this.right.toArray())
+    return a
+  }
+
+  inOrder = (): T[] => [
+    ...this.doIfExists(this.left, 'inOrder'),
+    this.value,
+    ...this.doIfExists(this.right, 'inOrder')
+  ]
+
+  preOrder = (): T[] => [
+    this.value, 
+    ...this.doIfExists(this.left, 'preOrder'), 
+    ...this.doIfExists(this.right, 'preOrder')
+  ]
+  
+  postOrder = (): T[] => [
+    ...this.doIfExists(this.left, 'postOrder'),
+    ...this.doIfExists(this.right, 'postOrder'),
+    this.value
+  ]
+
+  doIfExists = (n: TreeNode<T>, f: string): T[] => n ? n[f]() : []
 }
 
+type TreeArrayNode<T> = T | TreeArray<T>
+interface TreeArray<T> extends Array<TreeArrayNode<T>> {}
+
 export class Tree<T> {
-  root: TreeNode<T> = null
+  root: TreeNode<T>
+
+  constructor(a?: TreeArrayNode<T>) {
+    if (a) this.root = new TreeNode(a)
+  }
 
   isEmpty(): boolean {
-    return this.root === null
+    return this.root === undefined
   }
 
-  inOrder(): T[] {
-    function appendInOrder(n: TreeNode<T>, a: T[]) {
-      if (n.left !== null) appendInOrder(n.left, a)
-      a.push(n.value)
-      if (n.right !== null) appendInOrder(n.right, a)
-    }
-    const arr: T[] = []
-    appendInOrder(this.root, arr)
-    return arr
-  }
+  inOrder = (): T[] => this.root.inOrder()
 
-  preOrder(): T[] {
-    function appendPreOrder(n: TreeNode<T>, a: T[]) {
-      a.push(n.value)
-      if (n.left !== null) appendPreOrder(n.left, a)
-      if (n.right !== null) appendPreOrder(n.right, a)
-    }
-    const arr: T[] = []
-    appendPreOrder(this.root, arr)
-    return arr
-  }
+  preOrder = (): T[] => this.root.preOrder()
+
+  postOrder = (): T[] => this.root.postOrder()
 
   print(): string {
     function doPrint(n: TreeNode<T>): string {
-      let s: string = "" + n.value
-      if (n.left !== null) s = "(" + s + " " + doPrint(n.left)
-      if (n.right !== null) s = s + " " + doPrint(n.right) + ")"
+      if (!n) return ''
+      let s: string = `${n.value}`
+      if (n.left) s = `(${s} ${doPrint(n.left)}`
+      if (n.right) s = `${s} ${doPrint(n.right)})`
       return s
     }
     return doPrint(this.root)
+  }
+
+  toArray(): T[] {
+    const a = this.root.toArray()
+    if (a instanceof Array) return a as T[]
+    else return [a as T]
   }
 }
 
@@ -75,15 +109,15 @@ export class Chapter4 {
     return this.checkTree(t.root, Number.MIN_VALUE, Number.MAX_VALUE)
   }
   private checkTree<T>(n: TreeNode<T>, min: T, max: T): boolean {
-    // DEBUG: console.log(`this is checkTree (${n !== null ? n.value : "null"})`)
-    return n === null || (
+    // console.log(`this is checkTree (${n ? n.value : "null"})`)
+    return n === undefined || (
       this.checkNode(n, min, max)
       && this.checkTree(n.left, min, n.value)
       && this.checkTree(n.right, n.value, max)
     )
   }
   private checkNode<T>(n: TreeNode<T>, min: T, max: T): boolean {
-    // DEBUG: console.log(`checking node: ${n.value} | min: ${min} | max: ${max}`)
+    // console.log(`checking node: ${n ? n.value : "null"} | min: ${min} | max: ${max}`)
     return n.value <= max && n.value >= min
   }
 }
