@@ -8,16 +8,14 @@ class StackItem<T> {
 }
 
 export class Stack<T> {
-  top: StackItem<T> = null
+  top: StackItem<T>
 
   constructor(...values: T[]) {
-    for (const val of values) {
-      this.push(val)
-    }
+    values.forEach(v => this.push(v))
   }
 
   isEmpty(): boolean {
-    return this.top === null
+    return this.top === undefined
   }
 
   push(value: T) {
@@ -26,21 +24,22 @@ export class Stack<T> {
     this.top = end
   }
 
-  pop(): any {
-    if (this.isEmpty()) return null
-    const pop = this.top.value
-    this.top = this.top.next
-    return pop
+  pop(): T {
+    if (this.top) {
+      const pop = this.top.value
+      this.top = this.top.next
+      return pop
+    }
   }
 
-  peek(): any {
-    return this.top ? this.top.value : null
+  peek(): T {
+    if (this.top) return this.top.value
   }
 
-  toArray() {
+  toArray(): T[] {
     let p: StackItem<T> = this.top
-    const a: any[] = []
-    while (p !== null) {
+    const a: T[] = []
+    while (p) {
       a.push(p.value)
       p = p.next
     }
@@ -50,80 +49,105 @@ export class Stack<T> {
 
 /* 3.2 Stack Min: How would you design a stack which, in addition to push and
 pop, has a function min which returns the minimum element? Push, pop and min
-should all operate in 0(1) time. */
+should all operate in O(1) time. */
 class MinStack<T> extends Stack<T> {
   mins: Stack<StackItem<T>> // of StackItems
 
   constructor(...values: T[]) {
     super(...values)
+    this.mins = new Stack()
   }
   
-  push(value: T) {
-    super.push(value)
-    if (!this.mins) this.mins = new Stack()
-    if (this.mins.isEmpty() || value < this.min())
+  push(value: T): void {
+    if (this.mins.isEmpty() || value < this.min()) {
       this.mins.push(this.top)
+    }
+    super.push(value)
   }
 
   pop(): T {
-    if (this.min() === this.peek()) this.mins.pop()
+    if (this.mins.peek() === this.top) this.mins.pop()
     return super.pop()
   }
 
   min(): T {
-    return this.mins && !this.mins.isEmpty() 
-      ? this.mins.peek().value 
-      : null
+    if (!this.mins.isEmpty()) 
+      return this.mins.peek().value
+  }
+}
+
+class SizedStack<T> extends Stack<T> {
+  size: number = 0
+
+  constructor(readonly STACK_SIZE: number, values: T[]) {
+    super(...values)
+  }
+
+  isFull(): boolean {
+    return this.size === this.STACK_SIZE
+  }
+
+  push(value: T): void {
+    if (this.isFull()) return
+    super.push(value)
+    this.size++
+  }
+
+  pop(): T {
+    const pop: T = super.pop()
+    if (pop) {
+      this.size--
+      return pop
+    }
   }
 }
 
 /* 3.3 Stack of Plates: implement a stack composed of substacks with a maximum
 size; when a substack would exceed the maximum size, a new substack should be
 created. */
-class SetOfStacks<T> {
-  currentStackSize: number = 0
-  stacks: Stack<Stack<T>>
+class StackOfStacks<T> {
+  stacks: Stack<SizedStack<T>>
 
-  constructor(readonly STACK_SIZE: number, values?: T[]) {
-    if (values) for (const i of values) this.push(i)
+  constructor(readonly STACK_SIZE: number, values: T[]) {
+    this.stacks = new Stack<SizedStack<T>>()
+    values.forEach(v => this.push(v))
   }
 
-  push(value: T) {
-    if (!this.stacks) this.stacks = new Stack<Stack<T>>()
+  push(value: T): void {
     // if our current stack is at capacity, make a new one
-    if (this.currentStackSize >= this.STACK_SIZE || this.stacks.isEmpty()) {
+    if (this.currStackSize >= this.STACK_SIZE || this.stacks.isEmpty()) {
       this.stacks.push(new Stack<T>(value))
-      this.currentStackSize = 1
+      this.currStackSize = 1
     }
     // otherwise add the value to the current stack
     else {
       this.getCurrStack().push(value)
-      this.currentStackSize++
+      this.currStackSize++
     }
   }
 
   pop(): T {
-    if (this.peek() === null) return null
+    if (this.isEmpty()) return
     const value: T = this.getCurrStack().pop()
-    this.currentStackSize--
-    if (this.currentStackSize <= 0) {
+    this.currStackSize--
+    if (this.currStackSize < 1) {
       this.stacks.pop()
-      this.currentStackSize = this.STACK_SIZE
+      this.currStackSize = this.isEmpty() ? 0 : this.STACK_SIZE
     }
     return value
   }
 
-  peek() {
-    return this.getCurrStack() ? this.getCurrStack().peek() : null
+  peek(): T {
+    if (this.getCurrStack()) return this.getCurrStack().peek()
   }
 
   getCurrStack(): Stack<T> {
-    return this.stacks ? this.stacks.peek() : null
+    return this.stacks.peek()
   }
 
+  // either we have no stacks, or we have one empty stack
   isEmpty(): boolean {
-    return !this.stacks 
-        || this.stacks.isEmpty() 
+    return this.stacks.isEmpty() 
         || this.getCurrStack().isEmpty()
   }
 }

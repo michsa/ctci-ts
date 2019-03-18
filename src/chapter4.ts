@@ -23,6 +23,10 @@ export class TreeNode<T> {
     return a
   }
 
+  // note: if these were arrow functions, they would
+  // show up as properties in Chai's deep compare, which
+  // (for some reason) causes TreeNodes to incorrectly 
+  // fail a deep equality check.
   inOrder(): T[] {
     return [
       ...this.doIfExists(this.left, 'inOrder'),
@@ -30,7 +34,6 @@ export class TreeNode<T> {
       ...this.doIfExists(this.right, 'inOrder')
     ]
   }
-
   preOrder(): T[] {
     return [
       this.value, 
@@ -38,7 +41,6 @@ export class TreeNode<T> {
       ...this.doIfExists(this.right, 'preOrder')
     ]
   }
-  
   postOrder(): T[] {
     return [
       ...this.doIfExists(this.left, 'postOrder'),
